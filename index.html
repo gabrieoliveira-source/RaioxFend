@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raio-X do Estrategista | FEND</title>
+<meta name="description" content="Quanto você já sabe e por que isso ainda não virou o dinheiro que poderia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A2051;
+    --navy-fundo:#07173B;
+    --creme:#F5F1E8;
+    --creme-suave:rgba(245,241,232,.62);
+    --linha:rgba(245,241,232,.16);
+    --latao:#C9A227;
+    --erro:#E8917A;
+    --serif:'Bodoni Moda', Georgia, serif;
+    --sans:'Archivo', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--navy);
+    color:var(--creme);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+  .marca{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:.14em;
+    color:var(--creme);
+  }
+  /* ---------- abertura ---------- */
+  .abertura h1{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(40px,8vw,68px);
+    line-height:1.02;
+    margin:56px 0 18px;
+  }
+  .abertura p.linha-fina{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(18px,3.4vw,22px);
+    color:var(--creme-suave);
+    max-width:30ch;
+    margin:0 0 44px;
+  }
+  .campos{display:grid;gap:18px;max-width:460px}
+  label{display:block;font-size:13px;letter-spacing:.06em;color:var(--creme-suave);margin-bottom:7px}
+  input[type=text]{
+    width:100%;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--linha);
+    color:var(--creme);
+    font-family:var(--sans);
+    font-size:17px;
+    padding:8px 2px;
+  }
+  input[type=text]:focus{outline:none;border-bottom-color:var(--latao)}
+  input::placeholder{color:rgba(245,241,232,.3)}
+  .opcional{color:rgba(245,241,232,.4);font-size:12px;letter-spacing:.04em}
+  /* ---------- botões ---------- */
+  .btn{
+    font-family:var(--sans);
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:.02em;
+    padding:14px 28px;
+    border-radius:2px;
+    border:1px solid var(--creme);
+    background:var(--creme);
+    color:var(--navy);
+    cursor:pointer;
+    transition:opacity .15s ease;
+  }
+  .btn:hover{opacity:.85}
+  .btn:disabled{opacity:.28;cursor:not-allowed}
+  .btn-vazado{background:transparent;color:var(--creme);border-color:var(--linha)}
+  .btn:focus-visible,.nota:focus-visible,input:focus-visible{outline:2px solid var(--latao);outline-offset:3px}
+  /* ---------- progresso ---------- */
+  .topo{
+    position:sticky;top:0;z-index:5;
+    background:var(--navy);
+    padding:18px 0 14px;
+    border-bottom:1px solid var(--linha);
+    margin-bottom:30px;
+  }
+  .trilha{display:flex;gap:4px;margin-bottom:14px}
+  .trilha span{height:3px;flex:1;background:rgba(245,241,232,.18)}
+  .trilha span.feito{background:var(--latao)}
+  .trilha span.atual{background:var(--creme)}
+  .topo-info{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+  .topo-info h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,5vw,34px);margin:0}
+  .contador{font-size:13px;color:var(--creme-suave);white-space:nowrap}
+  .legenda{font-size:13px;color:var(--creme-suave);margin:0 0 26px}
+  .legenda b{color:var(--creme);font-weight:600}
+  /* ---------- itens ---------- */
+  .item{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 0;
+    border-bottom:1px solid var(--linha);
+  }
+  .item:last-of-type{border-bottom:0}
+  .item.faltando .item-texto{color:var(--erro)}
+  .item-texto{font-size:16px;line-height:1.35;max-width:46ch}
+  .notas{display:flex;gap:6px;flex-shrink:0}
+  .nota{
+    width:44px;height:44px;
+    border:1px solid var(--linha);
+    background:transparent;
+    color:var(--creme-suave);
+    font-family:var(--serif);
+    font-size:18px;
+    border-radius:50%;
+    cursor:pointer;
+    transition:background .12s ease,color .12s ease,border-color .12s ease;
+  }
+  .nota:hover{border-color:var(--creme)}
+  .nota[aria-checked=true]{background:var(--creme);color:var(--navy);border-color:var(--creme)}
+  .rodape{display:flex;align-items:center;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .aviso{font-size:13px;color:var(--erro);margin:0}
+  /* ---------- resultado ---------- */
+  .resultado{padding-top:26px}
+  .resultado h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,6vw,44px);margin:0 0 6px}
+  .placar{display:flex;align-items:baseline;gap:10px;margin:34px 0 8px}
+  .placar strong{font-family:var(--serif);font-size:clamp(74px,18vw,132px);font-weight:500;line-height:.86}
+  .placar span{font-family:var(--serif);font-size:24px;color:var(--creme-suave)}
+  .regua{margin:30px 0 10px}
+  .regua-barras{display:flex;height:8px;gap:3px}
+  .regua-barras div{flex:1;background:rgba(245,241,232,.18)}
+  .regua-barras div.ativa{background:var(--latao)}
+  .regua-rotulos{display:flex;margin-top:9px;font-size:12px;color:var(--creme-suave);letter-spacing:.05em}
+  .regua-rotulos div{flex:1}
+  .regua-rotulos div.ativa{color:var(--creme)}
+  .descricao-faixa{font-family:var(--serif);font-size:clamp(18px,3.6vw,23px);line-height:1.4;max-width:34ch;margin:24px 0 46px}
+  .secao-titulo{font-size:13px;letter-spacing:.09em;color:var(--creme-suave);margin:0 0 16px}
+  .blocos-lista{display:grid;gap:13px;margin-bottom:46px}
+  .bloco-linha{display:grid;grid-template-columns:1fr 92px;gap:14px;align-items:center}
+  .bloco-nome{font-size:15px}
+  .bloco-barra{height:6px;background:rgba(245,241,232,.14);margin-top:6px}
+  .bloco-barra i{display:block;height:100%;background:var(--creme)}
+  .bloco-num{font-family:var(--serif);font-size:16px;text-align:right;color:var(--creme-suave)}
+  .lacunas{display:grid;gap:9px;margin-bottom:44px}
+  .lacuna{display:flex;gap:12px;font-size:15px;color:var(--creme-suave);border-bottom:1px solid var(--linha);padding-bottom:9px}
+  .lacuna b{font-family:var(--serif);color:var(--latao);font-weight:500}
+  .status{font-size:14px;color:var(--creme-suave);margin-top:10px}
+  .status.falhou{color:var(--erro)}
+  .oculto{display:none}
+  @media(max-width:620px){
+    .item{flex-direction:column;align-items:flex-start;gap:12px}
+    .nota{width:52px;height:46px;border-radius:2px}
+    .notas{width:100%}
+    .nota{flex:1}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="marca">FEND</div>
+
+  <!-- ABERTURA -->
+  <section id="tela-abertura" class="abertura">
+    <h1>Raio-X do<br>Estrategista</h1>
+    <p class="linha-fina">Quanto você já sabe e por que isso ainda não virou o dinheiro que poderia.</p>
+    <div class="campos">
+      <div>
+        <label for="nome">Seu nome</label>
+        <input type="text" id="nome" autocomplete="name" placeholder="Nome e sobrenome">
+      </div>
+      <div>
+        <label for="atuacao">Sua atuação</label>
+        <input type="text" id="atuacao" placeholder="Gestora de tráfego, social media, dona de agência...">
+      </div>
+      <div>
+        <label for="contato">WhatsApp <span class="opcional">opcional</span></label>
+        <input type="text" id="contato" inputmode="tel" placeholder="(61) 90000-0000">
+      </div>
+    </div>
+    <p class="aviso oculto" id="aviso-abertura">Preencha nome e atuação para continuar.</p>
+    <div class="rodape">
+      <button class="btn" id="btn-comecar">Começar o raio-x</button>
+      <span class="contador">56 itens, leva uns 6 minutos</span>
+    </div>
+  </section>
+
+  <!-- BLOCOS -->
+  <section id="tela-bloco" class="oculto">
+    <div class="topo">
+      <div class="trilha" id="trilha"></div>
+      <div class="topo-info">
+        <h2 id="bloco-nome"></h2>
+        <span class="contador" id="bloco-contador"></span>
+      </div>
+    </div>
+    <p class="legenda"><b>0</b> nunca vi isso &nbsp; <b>1</b> sei o conceito &nbsp; <b>2</b> já apliquei &nbsp; <b>3</b> domino. Na dúvida entre 2 e 3, é 2.</p>
+    <div id="itens"></div>
+    <p class="aviso oculto" id="aviso-bloco">Faltou marcar alguns itens acima.</p>
+    <div class="rodape">
+      <button class="btn" id="btn-avancar">Continuar</button>
+      <button class="btn btn-vazado" id="btn-voltar">Voltar</button>
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section id="tela-resultado" class="resultado oculto">
+    <h2 id="res-saudacao"></h2>
+    <div class="placar"><strong id="res-total"></strong><span id="res-maximo"></span></div>
+    <div class="regua">
+      <div class="regua-barras" id="regua-barras"></div>
+      <div class="regua-rotulos" id="regua-rotulos"></div>
+    </div>
+    <p class="descricao-faixa" id="res-descricao"></p>
+
+    <p class="secao-titulo">Onde sua nota veio de cada área</p>
+    <div class="blocos-lista" id="res-blocos"></div>
+
+    <div id="res-lacunas-wrap">
+      <p class="secao-titulo">Os buracos mais caros do seu repertório hoje</p>
+      <div class="lacunas" id="res-lacunas"></div>
+    </div>
+
+    <p class="status" id="res-status">Salvando sua resposta...</p>
+  </section>
+</div>
+
+<script type="module">
+import { BLOCOS, NOTA_MAXIMA, FAIXAS, calcular, MAPA_ITENS, TOTAL_ITENS } from './raiox-dados.js';
+import { ENDPOINT, endpointPronto } from './config.js';
+
+const respostas = {};
+const pessoa = { nome:'', atuacao:'', contato:'' };
+let indiceBloco = 0;
+
+const $ = id => document.getElementById(id);
+const telas = { abertura:$('tela-abertura'), bloco:$('tela-bloco'), resultado:$('tela-resultado') };
+
+function mostrar(qual){
+  Object.entries(telas).forEach(([k,el]) => el.classList.toggle('oculto', k !== qual));
+  window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
+}
+
+// ---------- abertura ----------
+$('btn-comecar').addEventListener('click', () => {
+  pessoa.nome = $('nome').value.trim();
+  pessoa.atuacao = $('atuacao').value.trim();
+  pessoa.contato = $('contato').value.trim();
+  if(!pessoa.nome || !pessoa.atuacao){
+    $('aviso-abertura').classList.remove('oculto');
+    return;
+  }
+  $('aviso-abertura').classList.add('oculto');
+  indiceBloco = 0;
+  renderBloco();
+  mostrar('bloco');
+});
+
+// ---------- trilha de progresso ----------
+const trilha = $('trilha');
+BLOCOS.forEach(() => trilha.appendChild(document.createElement('span')));
+
+function pintarTrilha(){
+  [...trilha.children].forEach((el,i) => {
+    el.className = i < indiceBloco ? 'feito' : (i === indiceBloco ? 'atual' : '');
+  });
+}
+
+// ---------- bloco ----------
+function renderBloco(){
+  const bloco = BLOCOS[indiceBloco];
+  $('bloco-nome').textContent = bloco.nome;
+  $('bloco-contador').textContent = `Área ${indiceBloco+1} de ${BLOCOS.length}`;
+  pintarTrilha();
+  $('aviso-bloco').classList.add('oculto');
+  $('btn-voltar').style.visibility = indiceBloco === 0 ? 'hidden' : 'visible';
+  $('btn-avancar').textContent = indiceBloco === BLOCOS.length - 1 ? 'Ver meu resultado' : 'Continuar';
+
+  const alvo = $('itens');
+  alvo.innerHTML = '';
+  bloco.itens.forEach(item => {
+    const linha = document.createElement('div');
+    linha.className = 'item';
+    linha.dataset.item = item.id;
+
+    const texto = document.createElement('div');
+    texto.className = 'item-texto';
+    texto.id = `rot-${item.id}`;
+    texto.textContent = item.texto;
+
+    const grupo = document.createElement('div');
+    grupo.className = 'notas';
+    grupo.setAttribute('role','radiogroup');
+    grupo.setAttribute('aria-labelledby', texto.id);
+
+    [0,1,2,3].forEach(valor => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'nota';
+      b.setAttribute('role','radio');
+      b.setAttribute('aria-checked', respostas[item.id] === valor ? 'true' : 'false');
+      b.setAttribute('aria-label', `${valor} para ${item.texto}`);
+      b.textContent = valor;
+      b.addEventListener('click', () => {
+        respostas[item.id] = valor;
+        [...grupo.children].forEach(o => o.setAttribute('aria-checked','false'));
+        b.setAttribute('aria-checked','true');
+        linha.classList.remove('faltando');
+      });
+      grupo.appendChild(b);
+    });
+
+    linha.append(texto, grupo);
+    alvo.appendChild(linha);
+  });
+}
+
+$('btn-voltar').addEventListener('click', () => {
+  if(indiceBloco > 0){ indiceBloco--; renderBloco(); window.scrollTo({top:0}); }
+});
+
+$('btn-avancar').addEventListener('click', () => {
+  const bloco = BLOCOS[indiceBloco];
+  const faltando = bloco.itens.filter(i => respostas[i.id] === undefined);
+  if(faltando.length){
+    $('aviso-bloco').classList.remove('oculto');
+    $('aviso-bloco').textContent = faltando.length === 1
+      ? 'Faltou marcar 1 item acima.'
+      : `Faltaram ${faltando.length} itens acima.`;
+    faltando.forEach(i => document.querySelector(`[data-item="${i.id}"]`)?.classList.add('faltando'));
+    document.querySelector('.item.faltando')?.scrollIntoView({block:'center'});
+    return;
+  }
+  if(indiceBloco < BLOCOS.length - 1){
+    indiceBloco++;
+    renderBloco();
+    window.scrollTo({top:0});
+  } else {
+    finalizar();
+  }
+});
+
+// ---------- resultado ----------
+function finalizar(){
+  const r = calcular(respostas);
+  const primeiroNome = pessoa.nome.split(' ')[0];
+
+  $('res-saudacao').textContent = `${primeiroNome}, seu nível hoje é ${r.faixa.nome.toLowerCase()}.`;
+  $('res-total').textContent = r.total;
+  $('res-maximo').textContent = `/ ${NOTA_MAXIMA}`;
+  $('res-descricao').textContent = r.faixa.descricao;
+
+  const barras = $('regua-barras'), rotulos = $('regua-rotulos');
+  barras.innerHTML = ''; rotulos.innerHTML = '';
+  FAIXAS.forEach(f => {
+    const ativa = f.id === r.faixa.id;
+    const b = document.createElement('div');
+    b.style.flex = (f.max - f.min + 1);
+    if(ativa) b.className = 'ativa';
+    barras.appendChild(b);
+    const rot = document.createElement('div');
+    rot.style.flex = (f.max - f.min + 1);
+    rot.textContent = `${f.nome} ${f.min} a ${f.max}`;
+    if(ativa) rot.className = 'ativa';
+    rotulos.appendChild(rot);
+  });
+
+  const lista = $('res-blocos');
+  lista.innerHTML = '';
+  r.porBloco.forEach(b => {
+    const linha = document.createElement('div');
+    linha.className = 'bloco-linha';
+    linha.innerHTML = `
+      <div>
+        <div class="bloco-nome"></div>
+        <div class="bloco-barra"><i style="width:${b.percentual}%"></i></div>
+      </div>
+      <div class="bloco-num">${b.pontos} / ${b.maximo}</div>`;
+    linha.querySelector('.bloco-nome').textContent = b.nome;
+    lista.appendChild(linha);
+  });
+
+  const lacunas = Object.entries(respostas)
+    .filter(([,v]) => v <= 1)
+    .sort((a,b) => a[1] - b[1])
+    .slice(0,6);
+  const alvoLac = $('res-lacunas');
+  alvoLac.innerHTML = '';
+  if(!lacunas.length){
+    $('res-lacunas-wrap').classList.add('oculto');
+  } else {
+    lacunas.forEach(([id,valor]) => {
+      const el = document.createElement('div');
+      el.className = 'lacuna';
+      el.innerHTML = `<b>${valor}</b><span></span>`;
+      el.querySelector('span').textContent = `${MAPA_ITENS[id].texto} (${MAPA_ITENS[id].bloco})`;
+      alvoLac.appendChild(el);
+    });
+  }
+
+  mostrar('resultado');
+  salvar(r);
+}
+
+// ---------- salvar ----------
+function linhas(r){
+  const itens = Object.keys(MAPA_ITENS);
+  const cabecalho = [
+    'Data', 'Nome', 'Atuação', 'WhatsApp', 'Nota', 'Máximo', 'Nível',
+    ...BLOCOS.map(b => 'Área: ' + b.nome),
+    ...itens.map(id => MAPA_ITENS[id].texto)
+  ];
+  const agora = new Date();
+  const linha = [
+    agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }),
+    pessoa.nome, pessoa.atuacao, pessoa.contato,
+    r.total, NOTA_MAXIMA, r.faixa.nome,
+    ...r.porBloco.map(b => b.pontos),
+    ...itens.map(id => respostas[id] ?? '')
+  ];
+  return { cabecalho, linha };
+}
+
+async function salvar(r){
+  const status = $('res-status');
+  const dados = linhas(r);
+
+  if(!endpointPronto){
+    console.log('Sem endereço da planilha. Linha que seria enviada:', dados.linha);
+    status.textContent = 'Modo teste: a resposta não foi enviada para a planilha.';
+    return;
+  }
+
+  try{
+    await fetch(ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(dados)
+    });
+    status.classList.remove('falhou');
+    status.textContent = 'Resposta enviada. O time da FEND já consegue ver seu raio-x.';
+  }catch(e){
+    console.error(e);
+    status.classList.add('falhou');
+    status.textContent = 'Não deu para enviar sua resposta agora. Tire um print desta tela e recarregue a página para tentar de novo.';
+  }
+}
+</script>
+</body>
+</html>
