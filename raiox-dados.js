@@ -13,8 +13,7 @@ export const BLOCOS = [
     id: 'visao',
     nome: 'Visão e estrutura',
     itens: [
-      { id: 'visao_1', texto: 'Organograma e estrutura de um negócio digital' },
-      { id: 'visao_2', texto: 'Habilidades que um estrategista precisa dominar' }
+      { id: 'visao_1', texto: 'Organograma e estrutura de um negócio digital' }
     ]
   },
   {
@@ -121,27 +120,27 @@ export const BLOCOS = [
   }
 ];
 
-export const NOTA_MAXIMA = BLOCOS.reduce((soma, b) => soma + b.itens.length * 3, 0); // 168
+export const NOTA_MAXIMA = BLOCOS.reduce((soma, b) => soma + b.itens.length * 3, 0); // 165
 
 export const FAIXAS = [
   {
     id: 'junior',
     nome: 'Júnior',
     min: 0,
-    max: 56,
+    max: 55,
     descricao: 'Repertório em formação. Você vê e opera pedaços soltos de um negócio digital.'
   },
   {
     id: 'pleno',
     nome: 'Pleno',
-    min: 57,
-    max: 112,
+    min: 56,
+    max: 110,
     descricao: 'Repertório amplo. Você executa bem, mas ainda não enxerga e opera o sistema inteiro com autonomia.'
   },
   {
     id: 'senior',
     nome: 'Sênior, estrategista',
-    min: 113,
+    min: 111,
     max: NOTA_MAXIMA,
     descricao: 'Repertório de sistema. Você vê o todo e sabe decidir, não só executar.'
   }

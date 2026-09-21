@@ -193,7 +193,7 @@
     <p class="aviso oculto" id="aviso-abertura">Preencha nome e atuação para continuar.</p>
     <div class="rodape">
       <button class="btn" id="btn-comecar">Começar o raio-x</button>
-      <span class="contador">56 itens, leva uns 6 minutos</span>
+      <span class="contador" id="duracao"></span>
     </div>
   </section>
 
@@ -242,6 +242,7 @@ import { BLOCOS, NOTA_MAXIMA, FAIXAS, calcular, MAPA_ITENS, TOTAL_ITENS } from '
 import { ENDPOINT, endpointPronto } from './config.js';
 
 const respostas = {};
+document.getElementById('duracao').textContent = `${TOTAL_ITENS} itens, leva uns 6 minutos`;
 const pessoa = { nome:'', atuacao:'', contato:'' };
 let indiceBloco = 0;
 
